@@ -1,0 +1,34 @@
+<html>
+<script>
+Date.daysBetween = function( date1, date2 ) {
+  //Get 1 day in milliseconds
+  var one_day=1000*60*60*24;
+
+  // Convert both dates to milliseconds
+  var date1_ms = date1.getTime();
+  var date2_ms = date2.getTime();
+
+  // Calculate the difference in milliseconds
+  var difference_ms = date2_ms - date1_ms;
+
+  // Convert back to days and return
+  return Math.round(difference_ms/one_day); 
+}
+
+
+deadline = new Date(2017,0,3,0,0,0,0)
+ass2Return = new Date(2017,1,11,0,0,0,0)
+var days_between2 = Date.daysBetween(deadline,ass2Return)
+var toWrite = "<center><font size=28>כמות ימים בין הגשת מטלה 2 לציונים</br>"+days_between2 + "</font></center>"
+document.write(toWrite)
+deadline3 = new Date(2017,0,21,0,0,0,0)
+today = new Date()
+var days_between3 = Date.daysBetween(deadline3,today)
+var toWrite = "<center><font size=28>כמות ימים מאז הגשת מטלה 3 בלי ציונים</br>"+days_between3 + "</font></center>"
+document.write(toWrite)
+
+</script>
+<body>
+
+</body>
+</html>
