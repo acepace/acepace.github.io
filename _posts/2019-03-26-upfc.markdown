@@ -13,7 +13,7 @@ This time, I found a small service, named upfc.exe. I discovered this process is
 
 Discovery
 
-Upon loading the procmon boot log, there is a huge deluge of data. To find interesting tidbits of information, I filter by _user name_ and _process start _and get going. After a _small _bit of scrolling I see upfc.exe, and I think what the heck?
+Upon loading the procmon boot log, there is a huge deluge of data. To find interesting tidbits of information, I filter by _username_ and process start time and get going. After a _small _bit of scrolling I see upfc.exe, and I think what the heck?
 
 
 ![procmon trace]({{ site.url }}/images/UPFC0.png)
@@ -35,20 +35,20 @@ A few more strings give us pointers to related programs or services, such as sih
 
 Onwards to observe what the executable actually does when running. We can do this directly through procmon.
 
-Looking at registry keys, we see upfc.exe accesses _Computer\HKEY_LOCAL_MACHINE\SYSTEM\WaaS_ and its sub keys _Upfc _and _WaaSMedic_. _Upfc _doesn't seem to have interesting values, most seem related to when it runs. 
+Looking at registry keys, we see upfc.exe accesses _Computer\HKEY_LOCAL_MACHINE\SYSTEM\WaaS_ and its sub keys _Upfc_ and _WaaSMedic_. _Upfc_ doesn't seem to have interesting values, most seem related to when it runs. 
 
 
-![UPFC registry value names](images/UPFC2.png "UPFC registry values")
+![UPFC registry value names]({{ site.url }}/images/UPFC2.png)
 
 
 UPFC registry values
 
-But _WaaSMedic _sounds interesting. Without knowing anything about that particular service, the subkeys suggest there exists a mechanism for the WaaSMedic  service. 
+But _WaaSMedic_ sounds interesting. Without knowing anything about that particular service, the subkeys suggest there exists a mechanism for the WaaSMedic  service. 
 
 
 
 
-![WaaSMedic registry value names](images/UPFC3.png "WaaSMedic registry values")
+![WaaSMedic registry value names]({{ site.url }}/images/UPFC3.png)
 
 
 Plugins implement different functionalities include checking executable file health (signatures and metadata), correctness of background scheduled tasks and services. 
@@ -85,33 +85,34 @@ This function does a few things
 
 
 
-![Main function of UPFC](images/UPFC4.png "Main function of UPFC in IDA")
+![The function PerformDetectionAndRemediationIfNeeded]({{ site.url }}/images/UPFC4.png)
 
+The configuration file is stored at %windir%\WaaS\Services\ alongside a few additional files. The data is stored in XML and the data stored is unsurprising considering the context we have so far. Each file describes a specific service, specifying different settings such as service dependencies, description, run trigger, ACL and so forth. 
 
     
 
-![alt_text](images/UPFC5.png "image_tooltip")
+![Windows Services described in XML files]({{ site.url }}/images/UPFC5.png)
 
 
 
-    Our service, upfc, compares each item in the XML file versus the matching registry value saved under _HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WaaSMedicSvc_, looking for values that don't match. Keys checked include the name, the DLL to launch, the DACL covering the registry key, and so forth. A change in any of them can indicate a system malfunction or a security breach.
+Our service, upfc, compares each item in the XML file versus the matching registry value saved under _HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WaaSMedicSvc_, looking for values that don't match. Keys checked include the name, the DLL to launch, the DACL covering the registry key, and so forth. A change in any of them can indicate a system malfunction or a security breach.
 
 
-    The other files also describe Windows services relating to Windows Update. For the curious, the services covered by the XML files are BITS, Delivery Optimisation,WaaSMedic, Windows Update Agent, Trusted Installer and the Update Session Orchestrator Service. But UPFC only checks the state of WaaSMedic.
+The other files also describe Windows services relating to Windows Update. For the curious, the services covered by the XML files are BITS, Delivery Optimisation,WaaSMedic, Windows Update Agent, Trusted Installer and the Update Session Orchestrator Service. But UPFC only checks the state of WaaSMedic.
 
 2. If the WaaSMedicSvc service is invalid for some reason, such as invalid registry settings, the upfc program recreates the service according to the XML file.
 
 
-![alt_text](images/UPFC6.png "image_tooltip")
+![IDA snippet of the service recreation]({{ site.url }}/images/UPFC6.png)
 
 
-    In addition, it updates a telemetry provider with the changes it performed.
+In addition, it updates a telemetry provider with the changes it performed.
 
 
     
 
 
-![alt_text](images/UPFC7.png "image_tooltip")
+![Updates are logged to Windows telemetry]({{ site.url }}/images/UPFC7.png)
 
 
 
@@ -127,7 +128,7 @@ To check for trivial security problems, I examined the ACLs on the configuration
 
 
 
-![alt_text](images/UPFC8.png "image_tooltip")
+![WaaS configuration folder ACLs]({{ site.url }}/images/UPFC8.png)
 
 
 ACL details for one of the files under C:\Windows\WaaS\services
@@ -138,7 +139,7 @@ These security settings mean that there are zero security concerns as anyone who
 
 However, if anyone changed these files, they'd have a nice persistent privilege escalation ability. Since upfc would consistently change the permissions and values for sensitive registry keys (such as what executable a system service would run), an attacker could modify one of the services to point at malicious binaries, allowing attackers to run code with SYSTEM permissions.
 
- \
+ 
 And that was a fun hour of playing around :) At this point, we now understand one more small piece of the Windows Update process.
 
 In future posts, I'll look into WaaSMedic and whether it truly has a plugin ability.
