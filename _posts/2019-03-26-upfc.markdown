@@ -133,7 +133,7 @@ To check for trivial security problems, I examined the ACLs on the configuration
 
 ACL details for one of the files under C:\Windows\WaaS\services
 
-Unsurprisingly, only TrustedInstaller and administrators can modify the configuration files describing the services. TrustedInstaller is a special built in user, used by Windows as a security feature to prevent Windows app folders and system files from being altered by users and malware.
+Unsurprisingly, only TrustedInstaller and administrators can modify the configuration files describing the services. TrustedInstaller is a special built in service, used by Windows as a security feature to prevent Windows app folders and system files from being altered by users and malware.
 
 These security settings mean that there are zero security concerns as anyone who can interfere with the ACLs guarding these files is already on the other side of the administration airlock.
 
