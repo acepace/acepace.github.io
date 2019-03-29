@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "What the bleep is UPFC.exe?"
-date:   2019-01-26 17:55:03 +0200
+date:   2019-03-29 20:55:03 +0200
 categories: reverse-engineering windows
 ---
 
@@ -16,12 +16,9 @@ Discovery
 Upon loading the procmon boot log, there is a huge deluge of data. To find interesting tidbits of information, I filter by _user name_ and _process start _and get going. After a _small _bit of scrolling I see upfc.exe, and I think what the heck?
 
 
+![procmon trace]({{ site.url }}/images/UPFC0.png)
 
-![alt_text](images/UPFC0.png "image_tooltip")
-
-
-
-![alt_text](images/UPFC1.png "image_tooltip")
+![UPFC EXE information]({{ site.url }}/images/UPFC1.png)
 
 
 What the heck is that and what does "Updateability from SCM" even mean? This happens very early in the boot process.
@@ -41,7 +38,7 @@ Onwards to observe what the executable actually does when running. We can do thi
 Looking at registry keys, we see upfc.exe accesses _Computer\HKEY_LOCAL_MACHINE\SYSTEM\WaaS_ and its sub keys _Upfc _and _WaaSMedic_. _Upfc _doesn't seem to have interesting values, most seem related to when it runs. 
 
 
-![alt_text](images/UPFC2.png "image_tooltip")
+![UPFC registry value names](images/UPFC2.png "UPFC registry values")
 
 
 UPFC registry values
@@ -51,7 +48,7 @@ But _WaaSMedic _sounds interesting. Without knowing anything about that particul
 
 
 
-![alt_text](images/UPFC3.png "image_tooltip")
+![WaaSMedic registry value names](images/UPFC3.png "WaaSMedic registry values")
 
 
 Plugins implement different functionalities include checking executable file health (signatures and metadata), correctness of background scheduled tasks and services. 
@@ -88,7 +85,7 @@ This function does a few things
 
 
 
-![alt_text](images/UPFC4.png "image_tooltip")
+![Main function of UPFC](images/UPFC4.png "Main function of UPFC in IDA")
 
 
     
