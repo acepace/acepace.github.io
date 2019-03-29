@@ -13,7 +13,7 @@ This time, I found a small service, named upfc.exe. I discovered this process is
 
 Discovery
 
-Upon loading the procmon boot log, there is a huge deluge of data. To find interesting tidbits of information, I filter by _username_ and process start time and get going. After a _small _bit of scrolling I see upfc.exe, and I think what the heck?
+Upon loading the procmon boot log, there is a huge deluge of data. To find interesting tidbits of information, I filter by _username_ and process start time and get going. After a _small_ bit of scrolling I see upfc.exe, and I think what the heck?
 
 
 ![procmon trace]({{ site.url }}/images/UPFC0.png)
@@ -31,7 +31,7 @@ Running strings on the executable file provided no clear answers. A single strin
 
 This  tells us what WaaSMedic relates to, Windows Update health check, but not what this executable actually does.
 
-A few more strings give us pointers to related programs or services, such as sihclient.exe, or "antimalwareLight" that provide context on where when upfc fits in in the grand scheme of Windows. Strings like "antimalwareLight" provide context, for example, that upfc happens early in the boot process (but we knew that..) but again nothing helpful for understanding upfc itself.
+A few more strings give us pointers to related programs or services, such as sihclient.exe, or "antimalwareLight" that provide context on where upfc fits in in the grand scheme of Windows. Strings like "antimalwareLight" provide context, for example, that upfc happens early in the boot process (but we knew that..) but again nothing helpful for understanding upfc itself.
 
 Onwards to observe what the executable actually does when running. We can do this directly through procmon.
 
