@@ -51,7 +51,7 @@ But _WaaSMedic_ sounds interesting. Without knowing anything about that particul
 ![WaaSMedic registry value names]({{ site.url }}/images/UPFC3.png)
 
 
-Plugins implement different functionalities include checking executable file health (signatures and metadata), correctness of background scheduled tasks and services. 
+Plugins implement different functionalities such as checking executable file health (signatures and metadata), correctness of background scheduled tasks and services. 
 
 But all this is can be talked about in a future blog post. Lets return to UPFC.
 
@@ -73,7 +73,7 @@ The rough pseudo code is as follows (omitting error checking and logging)
 6. Call Upfc::LaunchSihIfAllowed
 7. Mark that upfc is not running
 
-This is short and readable (besides the weird usage of the registry instead of a Mutex objet) and the core function is clearly Upfc::PerformDetectionAndRemediationIfNeeded.
+This is short and readable (besides the weird usage of the registry instead of a Mutex object) and the core function is clearly Upfc::PerformDetectionAndRemediationIfNeeded.
 
 This function does a few things
 
