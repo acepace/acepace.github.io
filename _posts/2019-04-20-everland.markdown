@@ -1,0 +1,498 @@
+---
+layout: post
+title:  "PlaidCTF writeup - Everland"
+date:   2019-04-20 20:55:03 +0200
+categories: reverse-engineering CTF misc Everland
+---
+
+# PlaidCTF 2019 Everland - Writeup
+
+I played with 5BC in the [PlaidCTF 2019](https://play.plaidctf.com/), playing mostly misc and reversing. This is a writeup of Everland, a misc challenge that consisted of playing a text based action game and defeating a final boss.
+
+I worked on this challenge alongside [@EyalItkin](https://twitter.com/EyalItkin) who was 100% awesome.
+
+TL;DR We found two logical bugs. One, allowing us to defeat nearly every enemy by making them hurt themselves. Second, we found a way to defeat the boss with an “instant kill” attack.
+
+
+## Opening the challenge
+
+To start the challenge, we received a source file and a server presumably running a near identical copy of the code.
+
+Connecting to the server brought us the following prompt
+
+
+
+![alt_text](images/everland/WelcomeMessage.png "Welcome screen, classic text based")
+
+
+Clearly the player has some sort of health and strength and we’re facing off a generic opponent.
+
+Playing around with the game let us understand what options exist in the game and what is the challenge.
+
+The player can _forage_ for new items, providing items that can power up the player and provide new abilities.
+
+
+
+
+![alt_text](images/everland/Forage.png "Foraging gives us items such as Random Vines")
+
+
+We can _use _items, which probably gives us new abilities or restores health,
+
+
+
+
+![alt_text](images/everland/Use.png "We can use items such as Sharpened Dagger")
+
+
+Last, we can pick to fight. The player can pick different attacks.
+
+If we look at the text output, we can see the opponent attacks us before we can attack him.
+
+
+
+
+
+![alt_text](images/everland/fight.png "Text based action, pick an action and see results")
+
+
+Using this information, we could open up the source code and figure out how to get the flag.
+
+The source code of the program is written in Standard-ML, which we surmised from the file extension that was _.sml_. A quick google lead us to [this guide](https://learnxinyminutes.com/docs/standard-ml/) for learning Standard ML, it proved invaluable in understanding the code.
+
+{% highlight sml %}
+fun play_game hero Flag world _ =
+
+  (TextIO.print ("Wow, looks like you beat all the enemies!\n"
+
+                ^"Guess you deserve a flag: "); raise (CatFlag (**get_flag**())))
+
+  | play_game hero (Init f) world original =
+
+    play_game hero (f original) world original
+
+  | play_game hero enemy world original =
+
+  case (print_stats hero enemy; get_opt ())
+
+    of Fight => play_game hero (fight hero enemy) world original
+
+     | Forage => (forage hero world; play_game hero enemy world original)
+
+     | Eat => (use hero; play_game hero enemy world original)
+
+     (* Needs more: play_game hero enemy world original *)
+
+{% endhighlight %}
+
+Looking at this function, it looks like we need to defeat all of the enemies, at which point we get the flag. No surprise so far :) 
+
+Looking at the source code, we could see that there are 10 enemies and that somewhere there is a function that generates the enemies along with some sort of “boss” event.
+
+{% highlight sml %}
+
+val num_enemies = 10
+
+{% endhighlight %}
+
+{% highlight sml %}
+
+fun gen_enemies 0 = Init (fn e =>
+
+  case (find_best e 0 Nothing)
+
+    of (Opponent (health, strength, _, name, _)) =>
+
+       (health    := max((!strength)*5, 250);
+
+        strength  := max((!strength)*5, 250);
+
+        posessing := true;
+
+        Opponent (health, strength, [kill], "Posessed "^name, Flag))
+
+     | _ => raise (GameOver "Boooo, the phantom never appeared...."))
+
+  | gen_enemies n = Opponent(ref 80, ref 50, [
+
+        lunge, 
+
+        strike, 
+
+        empower, 
+
+        recoup
+
+      ], List.nth (enemy_names, getIdx ()), gen_enemies (n-1))
+
+{% endhighlight %}
+
+Clearly the challenge can be split into two parts
+
+1 - Defeating normal enemies
+
+2 - Defeating the end game Boss.
+
+At this point it was time to actually dig into the code
+
+
+## Collecting information
+
+We started out by simply reading the entire source code and annotating it for ourselves. I’ll go over the more important parts of the code and those that were relevant to the challenge. 
+
+Some parts were simple, such as foraging and generally the core game loop. By finding references to _forage_ we found the bottom most function, that receives player input.
+
+{% highlight sml %}
+
+fun get_opt () =
+
+let
+
+  val opt = prompt( 
+
+        "Are you ready for your next fight? You can:\n"
+
+       ^"  - "^(color "fight\n" GREEN)
+
+       ^"  - "^(color "**forage**\n" GREEN)
+
+       ^"  - "^(color "use\n" GREEN)
+
+       ^"  >")
+
+in
+
+  if opt = "fight" then Fight else
+
+  if opt = "**forage**" then **Forage **else
+
+  if opt = "use" then Eat else
+
+  (TextIO.print "Sorry, what was that?\n"; get_opt())
+
+end
+
+{% endhighlight %}
+
+Following references rapidly brought us to the code of _play_game_ which was easy to read even without knowing ML.
+
+{% highlight sml %}
+
+case (print_stats hero enemy; get_opt ())
+
+    of Fight => play_game hero (fight hero enemy) world original
+
+     | **Forage **=> (**forage** hero world; play_game hero enemy world original)
+
+     | Eat => (use hero; play_game hero enemy world original)
+
+     (* Needs more: play_game hero enemy world original *)
+
+We don’t really care about the implementation of _forage_ but we can look at the _world_ variable and see it’s initialised in the _start_ function with a small list of items.
+
+{% highlight sml %}
+
+val wilderness = ref [
+
+        ("Gross Weed", (20, 20, [stink])),
+
+        ("Risky Dust", (0, 35, [])),
+
+        ("Random Vines", (50, 0, [wrap])),
+
+        ("Sacrificial Net", (0, 0, [capture])),
+
+        ("Lucky Elixir", (100, 100, []))
+
+{% endhighlight %}
+
+By simply playing the game we could see that this list is static and every time forage is picked, the first item is removed. We also guessed (correctly) that the first number affected the users health, the second the users strength and the third was a function pointer that added player capabilities.
+
+Some parts were more complex, for example, the attack flow. We started out by looking at functions that affected health in battles.
+
+{% highlight sml %}
+
+fun lunge_fn (my_h, my_s, their_h, their_s) =
+
+let
+
+  val th = !their_h
+
+  val mh = !my_h
+
+in
+
+  (fn () => (their_h := 2*(!their_h) div 3; my_h := max(!my_h-10, 0)),
+
+   fn () => (their_h := th; my_h := mh))
+
+end
+
+{% endhighlight %}
+
+This function receives the health and strength of both fighters (we’ll call them my player and their player for reasons that will soon become clear). This function returns two functions: One that reduces the opponents’ health while reducing the attackers’ health by a lesser amount. The other function is effectively a _nop_.
+
+This and other functions are referenced in a few global variables such as
+
+{% highlight sml %}
+
+val kill  = ("Death Wave", kill_fn)
+
+val **lunge **= ("Spear Lunge", **lunge_fn**)
+
+val empower = ("Full Empower", empower_fn)
+
+{% endhighlight %}
+
+This variable is referenced in gen_enemies, as part of the “actions” an enemy can do.
+
+{% highlight sml %}
+
+fun gen_enemies 0 = Init (fn e =>
+
+  case (find_best e 0 Nothing)
+
+    of (Opponent (health, strength, _, name, _)) =>
+
+       (health    := max((!strength)*5, 250);
+
+        strength  := max((!strength)*5, 250);
+
+        posessing := true;
+
+        Opponent (health, strength, [kill], "Posessed "^name, Flag))
+
+     | _ => raise (GameOver "Boooo, the phantom never appeared...."))
+
+  | gen_enemies n = Opponent(ref 80, ref 50, [
+
+        lunge, 
+
+        strike, 
+
+        empower, 
+
+        recoup
+
+      ], List.nth (enemy_names, getIdx ()), gen_enemies (n-1))
+
+{% endhighlight %}
+
+To actually understand what the two returned functions are, we turned to the _fight_ function. This function is called from the main function with the following signature.
+
+{% highlight sml %}
+
+of Fight => play_game hero (fight hero enemy) world original
+
+{% endhighlight %}
+
+We can figure out what _hero_ and _enemy_ mean from two directions. One is looking at the data types defined in the source code.
+
+{% highlight sml %}
+
+datatype Enemy =
+
+  Flag
+
+| Nothing
+
+| Opponent of (health * strength * move list * string * Enemy)
+
+| Init of ((Enemy) -> Enemy)
+
+datatype Player = Hero of (health * strength * move list ref * bag) 
+
+{% endhighlight %}
+
+The other is looking at the function signature, as it breaks apart the parameters into smaller variables.
+
+{% highlight sml %}
+
+(* Fight! Fight! Fight! Fight! *)
+
+fun fight (hero as Hero(p_h, p_s, p_ms, bag)) 
+
+  (enemy as (Opponent (e_h, e_s, e_ms, e_name, next))) =
+
+{% endhighlight %}
+
+Skipping down to the bit where the player picks his action, we can clearly see that only one of the two functions are used. 
+
+{% highlight sml %}
+
+val _ = print_stats hero enemy
+
+      val _ = TextIO.print "Available Moves:\n"
+
+      val (name, init) = get_choice (!p_ms) RED
+
+      val _ = TextIO.print ("Using: "^(color name RED)^"\n")
+
+      val (act, _) = init (p_h, p_s, e_h, e_s)
+
+      val _ = act()
+
+{% endhighlight %}
+
+In interest of completeness, we’ll go over how the computer opponent picks his actions.
+
+The relevant code is 
+
+{% highlight sml %}
+
+let
+
+        val arena = (e_h, e_s, p_h, p_s)
+
+        val options = List.map (state_heuristic arena) e_ms
+
+        val (_, (name, activate)) = List.foldl (fn (ad as (a, _), bd as (b, _)) =>
+
+          if a > b then ad else bd) nop options
+
+        val _ = TextIO.print (e_name^" used "^name^"!\n")
+
+      in
+
+        activate () 
+
+      end
+
+{% endhighlight %}
+
+The code defines a data structure composed of the enemy state and the player state (note the order). It passes this state to a function named _state_heuristic_ along with a variable named e_ms which is the list of enemy actions. The mapping function returns a sequence of options, which are a pair of a _score_ and a (name, function) tuple. This sequence is fed into a fold function that picks the “best” option and returns the appropriate (name,function) tuple.
+
+The _state_heuristic_ function is pretty simple, it simulates running a specific action and quantifies how good the result is.
+
+We compiled the list of possible actions into the following table:
+
+
+<table>
+  <tr>
+   <td><strong>Action</strong>
+   </td>
+   <td><strong>Who can use it</strong>
+   </td>
+   <td><strong>Effect</strong>
+   </td>
+  </tr>
+  <tr>
+   <td>Kill
+   </td>
+   <td>Computer opponent only
+   </td>
+   <td>Opponent health := 0 
+   </td>
+  </tr>
+  <tr>
+   <td>Spear Lunge
+   </td>
+   <td>Computer opponent only
+   </td>
+   <td>Opponent health := health * 2 / 3.
+<p>
+My health := health - 10
+   </td>
+  </tr>
+  <tr>
+   <td>Sword Strike
+   </td>
+   <td>Both
+   </td>
+   <td>Opponent health := health - 15
+   </td>
+  </tr>
+  <tr>
+   <td>Full Empower
+   </td>
+   <td>Both
+   </td>
+   <td>My strength := strength + 20
+<p>
+My health := health - 20
+   </td>
+  </tr>
+  <tr>
+   <td>Recuperate
+   </td>
+   <td>Both
+   </td>
+   <td>My strength := strength - 20
+<p>
+My health := health + 10
+   </td>
+  </tr>
+  <tr>
+   <td>Net Capture
+   </td>
+   <td>Player only
+   </td>
+   <td>Sets global capture flag to true
+<p>
+Can only capture an enemy with less than 50 health
+<p>
+Once captured, we can choose to sacrifice him in one of our future turns
+   </td>
+  </tr>
+  <tr>
+   <td>Stink Out
+   </td>
+   <td>Player only
+   </td>
+   <td>Opponent strength := strength - 10
+   </td>
+  </tr>
+  <tr>
+   <td>Vine Wrap
+   </td>
+   <td>Player only
+   </td>
+   <td>Opponent strength := strength - 5
+<p>
+Opponent health := health - 5
+   </td>
+  </tr>
+  <tr>
+   <td>Pass
+   </td>
+   <td>Both
+   </td>
+   <td>Does nothing
+   </td>
+  </tr>
+</table>
+
+
+
+### Beating enemies
+
+Some trial and error, blind luck and writing up our own simulator told us that constantly uses R_ecuperate _would lead the enemy to kill himself by constantly using _Spear Lunge_ which also impacts his own health.
+
+Using this we could defeat all normal enemies. However, the “boss battle” had two significant differences.
+
+1 - The boss skips the first action, giving us a free shot
+
+2 - The boss has only a single action, _kill_, which instantly kills the player.
+
+To figure this out, we went back and looked at all the special actions.  We noticed that upon capturing an enemy, two things happen.
+
+First, we “capture” it and start fighting the next enemy.
+
+Second, we gain an additional action, Sacrifice. This one shot action sets player health to min(200, my health + min(captured health, my strength * 10)) and then reduces the captured enemy health by player health * 10.
+
+
+### Preparing for the Boss
+
+While “Sacrifice” will kill the enemy that we previously captured, we needed it to kill the Boss. After digging through the code, we saw that the boss will be an upgraded version of one of the enemies we defeated. The decision logic picks that the defeated enemy with the highest strength, strengthens it into a “Possessed” version, and makes it the final boss.
+
+Using our simulator, we found out that when we have low strength and full HP (after taking the foraged health potion), our opponent will pick “Full Empower” as his next move. This move increases the enemy’s strength, making him the preferred candidate to be “possessed”.
+
+While possessed, the boss is still linked to the previous “normal” enemy. Combining all of this together, we figured out we need to capture the last “normal” opponent, after we “convince” it to strengthen up. Now when we reach the final boss, we can use the sacrifice action to “instant kill” the opponent and the boss together.
+
+We decided to try this out on two enemies, it worked. We then went and tried this attack on the real server, spoilers, it worked.
+
+Because the real server had 10 enemies, this involved a lot of manual typing. We could have scripted it, but in the heat of the moment we got lazy.
+
+The flag in the end was
+
+_PCTF{just_be_glad_i_didnt_arm_cpt_hook_with_GADTs}_
