@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "PlaidCTF writeup - Everland"
-date:   2019-04-20 20:55:03 +0200
+date:   2019-04-20 20:00:03 +0200
 categories: reverse-engineering CTF misc Everland
 ---
 
@@ -22,7 +22,7 @@ Connecting to the server brought us the following prompt
 
 
 
-![alt_text](images/everland/WelcomeMessage.png "Welcome screen, classic text based")
+![alt_text]({{ site.url }}/images/everland/WelcomeMessage.png "Welcome screen, classic text based")
 
 
 Clearly the player has some sort of health and strength and we’re facing off a generic opponent.
@@ -34,7 +34,7 @@ The player can _forage_ for new items, providing items that can power up the pla
 
 
 
-![alt_text](images/everland/Forage.png "Foraging gives us items such as Random Vines")
+![alt_text]({{ site.url }}/images/everland/Forage.png "Foraging gives us items such as Random Vines")
 
 
 We can _use _items, which probably gives us new abilities or restores health,
@@ -42,7 +42,7 @@ We can _use _items, which probably gives us new abilities or restores health,
 
 
 
-![alt_text](images/everland/Use.png "We can use items such as Sharpened Dagger")
+![alt_text]({{ site.url }}/images/everland/Use.png "We can use items such as Sharpened Dagger")
 
 
 Last, we can pick to fight. The player can pick different attacks.
@@ -53,7 +53,7 @@ If we look at the text output, we can see the opponent attacks us before we can 
 
 
 
-![alt_text](images/everland/fight.png "Text based action, pick an action and see results")
+![alt_text]({{ site.url }}/images/everland/fight.png "Text based action, pick an action and see results")
 
 
 Using this information, we could open up the source code and figure out how to get the flag.
@@ -65,7 +65,7 @@ fun play_game hero Flag world _ =
 
   (TextIO.print ("Wow, looks like you beat all the enemies!\n"
 
-                ^"Guess you deserve a flag: "); raise (CatFlag (**get_flag**())))
+                ^"Guess you deserve a flag: "); raise (CatFlag (get_flag())))
 
   | play_game hero (Init f) world original =
 
@@ -85,7 +85,7 @@ fun play_game hero Flag world _ =
 
 {% endhighlight %}
 
-Looking at this function, it looks like we need to defeat all of the enemies, at which point we get the flag. No surprise so far :) 
+Looking at this function, it looks like we need to defeat all of the enemies, at which point we get the flag by raising an exception that references get_flag. No surprise so far :) 
 
 Looking at the source code, we could see that there are 10 enemies and that somewhere there is a function that generates the enemies along with some sort of “boss” event.
 
@@ -154,7 +154,7 @@ let
 
        ^"  - "^(color "fight\n" GREEN)
 
-       ^"  - "^(color "**forage**\n" GREEN)
+       ^"  - "^(color "forage\n" GREEN)
 
        ^"  - "^(color "use\n" GREEN)
 
@@ -164,7 +164,7 @@ in
 
   if opt = "fight" then Fight else
 
-  if opt = "**forage**" then **Forage **else
+  if opt = "forage" then Forage else
 
   if opt = "use" then Eat else
 
@@ -182,11 +182,12 @@ case (print_stats hero enemy; get_opt ())
 
     of Fight => play_game hero (fight hero enemy) world original
 
-     | **Forage **=> (**forage** hero world; play_game hero enemy world original)
+     | Forage => (forage hero world; play_game hero enemy world original)
 
      | Eat => (use hero; play_game hero enemy world original)
 
      (* Needs more: play_game hero enemy world original *)
+{% endhighlight %}
 
 We don’t really care about the implementation of _forage_ but we can look at the _world_ variable and see it’s initialised in the _start_ function with a small list of items.
 
