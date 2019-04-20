@@ -367,7 +367,6 @@ The _state_heuristic_ function is pretty simple, it simulates running a specific
 
 We compiled the list of possible actions into the following table:
 
-
 <table>
   <tr>
    <td><strong>Action</strong>
@@ -465,7 +464,7 @@ Opponent health := health - 5
 
 
 
-### Beating enemies
+## Beating enemies
 
 Some trial and error, blind luck and writing up our own simulator told us that constantly uses R_ecuperate _would lead the enemy to kill himself by constantly using _Spear Lunge_ which also impacts his own health.
 
@@ -482,7 +481,7 @@ First, we “capture” it and start fighting the next enemy.
 Second, we gain an additional action, Sacrifice. This one shot action sets player health to min(200, my health + min(captured health, my strength * 10)) and then reduces the captured enemy health by player health * 10.
 
 
-### Preparing for the Boss
+## Preparing for the Boss
 
 While “Sacrifice” will kill the enemy that we previously captured, we needed it to kill the Boss. After digging through the code, we saw that the boss will be an upgraded version of one of the enemies we defeated. The decision logic picks that the defeated enemy with the highest strength, strengthens it into a “Possessed” version, and makes it the final boss.
 
