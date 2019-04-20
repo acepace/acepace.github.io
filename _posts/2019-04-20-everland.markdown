@@ -367,106 +367,23 @@ The _state_heuristic_ function is pretty simple, it simulates running a specific
 
 We compiled the list of possible actions into the following table:
 
-<table>
-  <tr>
-   <td><strong>Action</strong>
-   </td>
-   <td><strong>Who can use it</strong>
-   </td>
-   <td><strong>Effect</strong>
-   </td>
-  </tr>
-  <tr>
-   <td>Kill
-   </td>
-   <td>Computer opponent only
-   </td>
-   <td>Opponent health := 0 
-   </td>
-  </tr>
-  <tr>
-   <td>Spear Lunge
-   </td>
-   <td>Computer opponent only
-   </td>
-   <td>Opponent health := health * 2 / 3.
-<p>
-My health := health - 10
-   </td>
-  </tr>
-  <tr>
-   <td>Sword Strike
-   </td>
-   <td>Both
-   </td>
-   <td>Opponent health := health - 15
-   </td>
-  </tr>
-  <tr>
-   <td>Full Empower
-   </td>
-   <td>Both
-   </td>
-   <td>My strength := strength + 20
-<p>
-My health := health - 20
-   </td>
-  </tr>
-  <tr>
-   <td>Recuperate
-   </td>
-   <td>Both
-   </td>
-   <td>My strength := strength - 20
-<p>
-My health := health + 10
-   </td>
-  </tr>
-  <tr>
-   <td>Net Capture
-   </td>
-   <td>Player only
-   </td>
-   <td>Sets global capture flag to true
-<p>
-Can only capture an enemy with less than 50 health
-<p>
-Once captured, we can choose to sacrifice him in one of our future turns
-   </td>
-  </tr>
-  <tr>
-   <td>Stink Out
-   </td>
-   <td>Player only
-   </td>
-   <td>Opponent strength := strength - 10
-   </td>
-  </tr>
-  <tr>
-   <td>Vine Wrap
-   </td>
-   <td>Player only
-   </td>
-   <td>Opponent strength := strength - 5
-<p>
-Opponent health := health - 5
-   </td>
-  </tr>
-  <tr>
-   <td>Pass
-   </td>
-   <td>Both
-   </td>
-   <td>Does nothing
-   </td>
-  </tr>
-</table>
+
+|Action|Who can use it|Effect|
+|Kill|Computer opponent only|Opponent health := 0|
+|Spear Lunge|Computer opponent only|Opponent health := health * 2 / 3. <br /> My health := health - 10|
+|Sword Strike|Both|Opponent health := health - 15|
+|Full Empower|Both|My strength := strength + 20; <br />My health := health - 20|
+|Recuperate|Both|My strength := strength - 20; <br />My health := health + 10|
+|Net Capture|Player only|Sets global capture flag to true. <br /> Can only capture an enemy with less than 50 health.<br /> Once captured, we can choose to sacrifice him in one of our future turns|
+|Stink Out|Player only|Opponent strength := strength - 10|
+|Vine Wrap|Player only|Opponent strength := strength - 5;<br /> Opponent health := health - 5|
+|Pass|Both|Does nothing|
 
 
 
 ## Beating enemies
 
-Some trial and error, blind luck and writing up our own simulator told us that constantly uses R_ecuperate _would lead the enemy to kill himself by constantly using _Spear Lunge_ which also impacts his own health.
+Some trial and error, blind luck and writing up our own simulator told us that by forcing the enemy to constantly use Recuperate would lead the enemy to kill himself by constantly using _Spear Lunge_ which also impacts his own health.
 
 Using this we could defeat all normal enemies. However, the “boss battle” had two significant differences.
 
