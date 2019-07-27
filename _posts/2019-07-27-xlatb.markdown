@@ -224,7 +224,7 @@ Also this was an opportunity to rediscover micro benchmarking. It’s quite like
 
 [@wobel_](https://twitter.com/wobel_) for providing the VM and therapy while I swore at cloud providers.
 
-[@damageboy](https://twitter.com/damageboy) for generally knowing everything and in this case, for writing a series of blog posts on micro benchmarking .NET instructions available here [https://bits.houmus.org/2018-08-18/netcoreapp3.0-instrinsics-in-real-life-pt1](https://bits.houmus.org/2018-08-18/netcoreapp3.0-instrinsics-in-real-life-pt1) that pushed me to do this sort of stuff
+[@damageboy](https://twitter.com/damageboy) for generally knowing everything and in this case, for writing a series of blog posts on micro benchmarking .NET instructions available [here](https://bits.houmus.org/2018-08-18/netcoreapp3.0-instrinsics-in-real-life-pt1) that pushed me to do this sort of stuff
 
 And again to Andreas Abel for saving me a lot of time with his micro benchmarking harness available on [GitHub](https://github.com/andreas-abel/nanoBench)
 
