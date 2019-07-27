@@ -6,12 +6,8 @@ categories: x86 x86_x64 benchmarking xlatb
 ---
 
 
-## How I got nerd sniped into benchmarking legacy x86 instructions
-
 It all started with a meme tweet:
 
-
-    
 
 ![twitter meme describing waves to extract values from an array in x64]({{ site.url }}/images/xlatb/meme.jpg)
 
