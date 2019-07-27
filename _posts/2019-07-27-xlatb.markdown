@@ -190,7 +190,7 @@ To examine these type of questions, another tool is required - the Intel Archite
 | 1* | xor rcx,rcx | 1* | movzx rcx,al |
 | 1 | mov cl,al | 1 | add rcx, rbx |
 | 1 | add rcx,rbx | 1 | mov al, byte ptr [rcx]  |
-| 1 | mov al, byte ptr [rcx] | 2^3 | pop [rcx] |
+| 1 | mov al, byte ptr [rcx] | 2^# | pop [rcx] |
 | 2^# | pop rcx |   |   |
 
 The important bit is noting that in snippet 0, the opcodes xor rcx,rcx; mov cl,al takes up one execution unit (xor rcx rcx is not bound to an execution port). 
