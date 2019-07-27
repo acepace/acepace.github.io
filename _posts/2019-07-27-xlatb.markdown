@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "How I got nerd sniped into benchmarking legacy x86 instructions?"
-date:   2019-07-27 18:55:03 +0200
+date:   2019-07-27 17:55:03 +0200
 categories: x86,x86_x64, benchmarking, xlatb
 ---
 
@@ -120,7 +120,7 @@ mov al, [rcx]
 
 pop rcx
 
-{% endhighlight}
+{% endhighlight %}
    </td>
    <td>
    {% highlight nasm %}
