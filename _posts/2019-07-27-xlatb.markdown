@@ -24,7 +24,9 @@ XLAT/XLATB - _Locates a byte entry in a table in memory, using the contents of t
 
 In other words, the instruction performs 
 
-_MOV AL,[EBX+AL]; _
+{% highlight nasm %}
+MOV AL,[EBX+AL];
+{% endhighlight %}
 
 EBX is the array base and AL is the offset.
 
@@ -156,50 +158,18 @@ For this experiment, what matters is the number of cycles required to execute (w
 The command line I used when executing the benchmarks was
 
 {% highlight shell %}
+
 ./nanoBench.sh -avg -n_measurements 500 -asm_init "mov rbx, rsp;xor rax,rax;" -asm SNIPPET_HERE -config configs/cfg_Broadwell_common.txt
+
 {% endhighlight %}
 
 The results, summarized in a table:
-<table>
-  <tr>
-   <td>Snippet 0
-   </td>
-   <td>Snippet 1
-   </td>
-   <td>Snippet 2
-   </td>
-   <td>Snippet 3
-   </td>
-  </tr>
-  <tr>
-   <td>RDTSC: 6.35
-<p>
-Core cycles: 8.01
-   </td>
-   <td>RDTSC: 6.00
-<p>
-Core cycles: 7.02
-   </td>
-   <td>RDTSC: 4.81
-<p>
-Core cycles: 6.36
-   </td>
-   <td>RDTSC: 5.6
-<p>
-Core cycles: 7.01
-   </td>
-  </tr>
-  <tr>
-   <td>Loads: 2
-   </td>
-   <td>Loads: 2
-   </td>
-   <td>Loads: 2
-   </td>
-   <td>Loads: 1
-   </td>
-  </tr>
-</table>
+
+| Snippet 0 | Snippet 1 | Snippet 2 | Snippet  |
+|-------|--------|---------|
+| RDTSC: 6.35 | RDTSC: 6.00 | RDTSC:  4.81 | RDTSC: 5.6 | 
+| Core cycles: 8.01 | Core cycles: 7.02 | Core cycles: 6.36 | Core cycles: 7.01 |
+| Loads: 2 | Loads: 2 | Loads: 2 | Loads: 2 |
 
 
 There are a few things that stand out. 
