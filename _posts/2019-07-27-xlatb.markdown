@@ -165,8 +165,8 @@ The command line I used when executing the benchmarks was
 
 The results, summarized in a table:
 
-| Snippet 0 | Snippet 1 | Snippet 2 | Snippet  |
-|-------|--------|---------|
+| Snippet 0 | Snippet 1 | Snippet 2 | Snippet 3 |
+|-------|--------|---------|---------|
 | RDTSC: 6.35 | RDTSC: 6.00 | RDTSC:  4.81 | RDTSC: 5.6 | 
 | Core cycles: 8.01 | Core cycles: 7.02 | Core cycles: 6.36 | Core cycles: 7.01 |
 | Loads: 2 | Loads: 2 | Loads: 2 | Loads: 2 |
@@ -184,80 +184,18 @@ Last, note that reducing the amount of instructions used does not decrease time 
 
 To examine these type of questions, another tool is required - the Intel Architecture Code Analyzer ([IACA](https://software.intel.com/en-us/articles/intel-architecture-code-analyzer) - unfortunately now deprecated). This tool will look at the machine code and tell you how different Intel CPUs will execute them. Let’s look at one case in particular to see why removing instructions doesn’t always linearly save time. Attached are only the relevant parts of the output, which are the micro-op count.
 
-* - instruction micro-ops not bound to a port
+\* - instruction micro-ops not bound to a port
 
 ^ - Micro Fusion occurred
 
-
-<table>
-  <tr>
-   <td colspan="2" >Snippet 0
-   </td>
-   <td colspan="2" >Snippet 1
-   </td>
-  </tr>
-  <tr>
-   <td>Num Of
-<p>
- Uops 
-<p>
-------
-<p>
-  3^# 
-<p>
-  1*  
-<p>
-  1   
-<p>
-  1   
-<p>
-  1   
-<p>
-  2^# 
-   </td>
-   <td>push rcx
-<p>
-xor rcx, rcx
-<p>
-mov cl, al
-<p>
-add rcx, rbx
-<p>
-mov al, byte ptr [rcx]
-<p>
-pop rcx
-   </td>
-   <td>Num Of
-<p>
- Uops 
-<p>
-------
-<p>
-  3^# 
-<p>
-  1*   
-<p>
-  1   
-<p>
-  1   
-<p>
-  2^# 
-   </td>
-   <td>push rcx
-<p>
-movzx rcx,al
-<p>
-mov cl, al
-<p>
-add rcx, rbx
-<p>
-mov al, byte ptr [rcx]
-<p>
-pop rcx
-   </td>
-  </tr>
-</table>
-
+| Number of Uops | opcodes | Number of Uops | opcodes |
+|-------|--------|---------|---------|
+| 3^# | push rcx | 3^# | push rcx |
+| 1* | xor rcx,rcx | 1* | movzx rcx,al |
+| 1 | mov cl,al | 1 | add rcx, rbx |
+| 1 | add rcx,rbx | 1 | mov al, byte ptr [rcx]  |
+| 1 | mov al, byte ptr [rcx] | 2^3 | pop [rcx] |
+| 2^# | pop rcx |   |   |
 
 The important bit is noting that in snippet 0, the opcodes xor rcx,rcx; mov cl,al takes up one execution unit (xor rcx rcx is not bound to an execution port). 
 
