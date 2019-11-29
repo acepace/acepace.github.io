@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "WhatsApp vs NSO - A technical read of the complaint"
+title:  "WhatsApp vs. NSO - A Technical Read of the Complaint"
 date:   2019-11-30 10:55:03 +0200
 categories: security history 
 tags: [security, history, NSO, WhatsApp]
