@@ -139,8 +139,5 @@ In this case, we see the contract specifies a total of 25 concurrent implants. F
 
 References:
 
-
-
-*   The complaint itself
 *   [Whatsapp announcement](https://faq.whatsapp.com/help/video-calling-cyber-attack)
 
