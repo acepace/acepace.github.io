@@ -10,7 +10,7 @@ categories: CTF misc
 
 I played with [5BC](https://ctftime.org/team/42318) in the [PlaidCTF 2020](https://play.plaidctf.com/), playing mostly misc and reversing. This is a writeup of `file-system-based strcmp go brrrr`, a misc challenge that consisted of a FAT32 file system image.
 
-TL;DR Someone implemented a  DFA based regex engine on top of the FAT filesystem to hiding a flag, but you didn't need to understand any of that to solve it.
+TL;DR Someone implemented a  DFA based regex engine on top of the FAT filesystem to hide a flag, but you didn't need to understand any of that to solve it.
 
 I will present 2 different solution, both  "cheating" and missing the point.
 
