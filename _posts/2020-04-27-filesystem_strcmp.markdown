@@ -6,7 +6,7 @@ categories: CTF misc
 ---
 
 
-# PlaidCTF 2019 Everland - Writeup
+# PlaidCTF 2019 Filesystem based strcmp go brrr - Writeup
 
 I played with [5BC](https://ctftime.org/team/42318) in the [PlaidCTF 2020](https://play.plaidctf.com/), playing mostly misc and reversing. This is a writeup of file-system-based strcmp go brrrr
 , a misc challenge that consisted of a FAT32 file system image.
