@@ -174,4 +174,4 @@ The correct solution involved understanding that the MATCH file is the correct s
 
 Some pointers in that direction would be that the MATCH file was found in a specific directory listing of `}` that was different from other `}` directories.
 
- 
+Thank you to [8051Enthusiast](https://twitter.com/8051Enthusiast) for writing such an absurd library and to whoever wrote the challenge.
