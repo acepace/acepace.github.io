@@ -109,8 +109,6 @@ Notice the `PCTF{` bit in the middle? One minute with notepad++ and we get the f
 
 This writeup was contributed by [@OphirHarpaz](https://twitter.com/OphirHarpaz).
 
-Possible solution:
-
 1. Get number of data clusters from the filesystem
 
         ubuntu@vm:~$ fatcat -i strcmp.fat32
@@ -128,7 +126,7 @@ Possible solution:
         	fatcat strcmp.fat32 -L $i 2>/dev/null | grep '^f' >> file_names.txt
         done
 
-    For some reason, this script gets stuck at 65538, but it still gets all important file names 🤷‍♂️
+For some reason, this script gets stuck at 65538, but it still gets all important file names 🤷‍♂️
 
 3. Fetch the **unique** file names
 
@@ -156,19 +154,20 @@ Possible solution:
 
     ❗ Parsing the FAT is a mistake, because it maps between files and clusters. We need to start from the file and backtrack its directory tree, so we actually need **directory table entries** and not FAT.
 
-    So apparently... *fatcat* has a flag to do just that ("search for cluster reference").
+So apparently... *fatcat* has a flag to do just that ("search for cluster reference").
 
         ubuntu@vm:~$ fatcat strcmp.fat32 -k 1842  # 1842 is MATCH's cluster
 
-    At this point we notice that this cluster is "pointed to" by many files. So we can just `grep` for MATCH:
+At this point we notice that this cluster is "pointed to" by many files. So we can just `grep` for MATCH:
 
         ubuntu@vm:~$ fatcat -k 1842 strcmp.fat32 | grep '\bMATCH'
         Found /SPACE/SPACE/!/SPACE/!/SPACE/SPACE/SPACE/!/#/P/C/P/C/P/C/T/F/{/P/C/P/C/T/F/{/P/C/T/F/{/W/H/A/T/_/I/N/_/T/A/R/N/A/T/I/O/N/_/I/S/_/T/H/1/S/_/F/I/L/E/S/Y/S/T/E/M/!/}/MATCH in directory } (1638)
         f 1/1/1980 00:00:00  MATCH                          c=1842 s=0 (0B)
 
-    The flag is right there after a bit of sanitization.
+The flag is right there after a bit of sanitization.
 
 
+# End
 I hope you had fun reading far too many words relating to how we cheated our way through a filesystem built by [regex2fat](https://github.com/8051Enthusiast/regex2fat).
 
 The correct solution involved understanding that the MATCH file is the correct solution and probably parsing the file system tree till we find it.
