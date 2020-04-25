@@ -17,7 +17,7 @@ I will present 2 different solution, both  "cheating" and missing the point.
 
 # Solution 1
 
-Looking at the drive using fatcat, we can see that multiple folder listings point to the same cluster entry, along with a single size 0 file.
+Looking at the drive using [fatcat](https://github.com/Gregwar/fatcat), we can see that multiple folder listings point to the same cluster entry, along with a single size 0 file.
 
     acepace@Ace-XPS:~$ fatcat -l / strcmp.fat32
     Listing path /
