@@ -12,7 +12,7 @@ I played with [5BC](https://ctftime.org/team/42318) in the [PlaidCTF 2020](https
 
 TL;DR Someone implemented a  DFA based regex engine on top of the FAT filesystem to hide a flag, but you didn't need to understand any of that to solve it.
 
-I will present 2 different solution, both  "cheating" and missing the point.
+I will present 2 different solution, both "cheating" and missing the point.
 
 # The challenge
 
@@ -142,24 +142,27 @@ Fetch the **unique** file names
         TOOBAD
         TROLLOL
 
-Find the file *MATCH* in *file_names* to see which cluster it starts in (answer is 1842)
+We can notice the MATCH file and guess it may be relevant. So we find the file *MATCH* in *file_names* to see which cluster it starts in. 
+If you've read Solution 1 you already know the answer is 1842.
 
-Backtrack where the file *MATCH* is located by parsing the FAT (**HOW?!**)
+At this point, we want to find what folder contains that specific file entry, hoping it will improve our situation.
+In this case, using `fatcat`s JSON output and jq is a neat thing.
 
-    ❗ Parsing the FAT is a mistake, because it maps between files and clusters. We need to start from the file and backtrack its directory tree, so we actually need **directory table entries** and not FAT.
 
-So apparently... *fatcat* has a flag to do just that ("search for cluster reference").
+    for i in {1..66000}; do fatcat strcmp.fat32 -L $i -F json 2>/dev/null | jq 'if (.Entries[] | select(.Name == "MATCH")) then .Cluster else "" end'; done
+    
+At this point we want to lookup references to these directory entries. We again turn to our trusty sidekick `-k` and the following fun command line
 
-        ubuntu@vm:~$ fatcat strcmp.fat32 -k 1842  # 1842 is MATCH's cluster
+    for i in {1..66000}; do fatcat strcmp.fat32 -L $i -F json 2>/dev/null | jq 'if (.Entries[] | select(.Name == "MATCH")) then .Cluster else "" end' | xargs --no-run-if-empty fatcat strcmp.fat32 -k ; done
+    
+Note the `--no-run-if-empty` passed to xargs.
 
-At this point we notice that this cluster is "pointed to" by many files. So we can just `grep` for MATCH:
+If we run this for a minute, we magically get the *correct* solution
 
-        ubuntu@vm:~$ fatcat -k 1842 strcmp.fat32 | grep '\bMATCH'
-        Found /SPACE/SPACE/!/SPACE/!/SPACE/SPACE/SPACE/!/#/P/C/P/C/P/C/T/F/{/P/C/P/C/T/F/{/P/C/T/F/{/W/H/A/T/_/I/N/_/T/A/R/N/A/T/I/O/N/_/I/S/_/T/H/1/S/_/F/I/L/E/S/Y/S/T/E/M/!/}/MATCH in directory } (1638)
-        f 1/1/1980 00:00:00  MATCH                          c=1842 s=0 (0B)
+    Searching for an entry referencing 1638 ...
+    Found /SPACE/SPACE/!/SPACE/!/SPACE/SPACE/SPACE/!/#/P/C/P/C/P/C/T/F/{/P/C/P/C/T/F/{/P/C/T/F/{/W/H/A/T/_/I/N/_/T/A/R/N/A/T/I/O/N/_/I/S/_/T/H/1/S/_/F/I/L/E/S/Y/S/T/E/M/!/} in directory ! (902)
 
-The flag is right there after a bit of sanitization.
-
+A minute of notepad++ and we're + 150 points.
 
 # End
 I hope you had fun reading far too many words relating to how we cheated our way through a filesystem built by [regex2fat](https://github.com/8051Enthusiast/regex2fat).
