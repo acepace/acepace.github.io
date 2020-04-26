@@ -14,6 +14,19 @@ TL;DR Someone implemented a  DFA based regex engine on top of the FAT filesystem
 
 I will present 2 different solution, both  "cheating" and missing the point.
 
+# The challenge
+
+Mounting the file system gives us nothing useful. The root directory is composed of multiple one character directories and a single 0 byte file named TODO
+
+    acepace@Ace-XPS:~$ ls /mnt/ctf
+<span style="color:blue">
+    `  _  !  (  {  @  &  %  1  3  5  7  9  B  D  F  H  J  L  N  P  R  <span style="color:green">SORRY</span>  T  V  X  Z
+    ^  -  '  )  }  $  #  0  2  4  6  8  A  C  E  G  I  K  M  O  Q  S  SPACE  U  W  Y
+</span>
+
+Checking a sample of the subdirectories gives us similar directory listings with different 0 size files.
+
+
 # Solution 1
 
 Looking at the drive using [fatcat](https://github.com/Gregwar/fatcat), we can see that multiple folder listings point to the same cluster entry, along with a single size 0 file.
@@ -106,28 +119,16 @@ Notice the `PCTF{` bit in the middle? One minute with notepad++ and we get the f
 
 # Solution 2
 
-This writeup was contributed by [@OphirHarpaz](https://twitter.com/OphirHarpaz).
+Parts of this writeup was contributed by [@OphirHarpaz](https://twitter.com/OphirHarpaz). We believe this is what the challenge author intended.
 
-1. Get number of data clusters from the filesystem
-
-        ubuntu@vm:~$ fatcat -i strcmp.fat32
-        FAT Filesystem information
-        
-        Filesystem type: fat32
-        OEM name: strcmp
-        Total sectors: 66057
-        Total data clusters: 65664
-
-2. Get all **file entries** by enumerating all clusters and `grep`ping the entries that starts with `f`
+Get all **file entries** by enumerating all clusters and `grep`ping the entries that starts with `f`
 
         for i in {1..66000}
         do
         	fatcat strcmp.fat32 -L $i 2>/dev/null | grep '^f' >> file_names.txt
         done
 
-For some reason, this script gets stuck at 65538, but it still gets all important file names 🤷‍♂️
-
-3. Fetch the **unique** file names
+Fetch the **unique** file names
 
         ubuntu@vm:~$ cat file_names.txt | cut -d' ' -f5 | sort | uniq
         HAHA
@@ -141,15 +142,9 @@ For some reason, this script gets stuck at 65538, but it still gets all importan
         TOOBAD
         TROLLOL
 
-4. Find the file *MATCH* in *file_names* to see which cluster it starts in (answer is 1842)
+Find the file *MATCH* in *file_names* to see which cluster it starts in (answer is 1842)
 
-        ubuntu@vm:~$ cat file_names.txt | grep MATCH
-        f 1/1/1980 00:00:00  MATCH                          c=1842 s=0 (0B)
-        f 1/1/1980 00:00:00  MATCH                          c=1842 s=0 (0B)
-        f 1/1/1980 00:00:00  MATCH                          c=1842 s=0 (0B)
-        ... # many more of these identical lines
-
-5. Backtrack where the file *MATCH* is located by parsing the FAT (**HOW?!**)
+Backtrack where the file *MATCH* is located by parsing the FAT (**HOW?!**)
 
     ❗ Parsing the FAT is a mistake, because it maps between files and clusters. We need to start from the file and backtrack its directory tree, so we actually need **directory table entries** and not FAT.
 
