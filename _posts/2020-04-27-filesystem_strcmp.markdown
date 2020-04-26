@@ -16,15 +16,13 @@ I will present 2 different solution, both "cheating" and missing the point.
 
 # The challenge
 
-Mounting the file system gives us nothing useful. The root directory is composed of multiple one character directories and a single 0 byte file named TODO
+Mounting the file system gives us nothing useful. The root directory is composed of multiple one character directories and a single 0 byte file named SORRY
 
     acepace@Ace-XPS:~$ ls /mnt/ctf
-<span style="color:blue">
-    `  _  !  (  {  @  &  %  1  3  5  7  9  B  D  F  H  J  L  N  P  R  <span style="color:green">SORRY</span>  T  V  X  Z
+    `  _  !  (  {  @  &  %  1  3  5  7  9  B  D  F  H  J  L  N  P  R  SORRY T  V  X  Z
     ^  -  '  )  }  $  #  0  2  4  6  8  A  C  E  G  I  K  M  O  Q  S  SPACE  U  W  Y
-</span>
 
-Checking a sample of the subdirectories gives us similar directory listings with different 0 size files.
+Checking a sample of the subdirectories gives us similar directory listings with a single 0 size file.
 
 
 # Solution 1
