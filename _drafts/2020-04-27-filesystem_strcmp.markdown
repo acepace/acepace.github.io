@@ -156,7 +156,7 @@ At this point we want to lookup references to these directory entries. We again 
     
 Note the `--no-run-if-empty` passed to `xargs`.
 
-If we run this for a minute, we magically get the *correct* solution
+If we run this for a minute, we magically get the **correct** solution
 
     Searching for an entry referencing 1638 ...
     Found /SPACE/SPACE/!/SPACE/!/SPACE/SPACE/SPACE/!/#/P/C/P/C/P/C/T/F/{/P/C/P/C/T/F/{/P/C/T/F/{/W/H/A/T/_/I/N/_/T/A/R/N/A/T/I/O/N/_/I/S/_/T/H/1/S/_/F/I/L/E/S/Y/S/T/E/M/!/} in directory ! (902)
