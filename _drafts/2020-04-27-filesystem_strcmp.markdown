@@ -142,12 +142,11 @@ Fetch the **unique** file names
         TOOBAD
         TROLLOL
 
-We can notice the MATCH file and guess it may be relevant. So we find the file *MATCH* in *file_names* to see which cluster it starts in. 
-If you've read Solution 1 you already know the answer is 1842.
+We can notice the MATCH file and guess it may be relevant to us.
 
-At this point, we want to find what folder contains that specific file entry, hoping it will improve our situation.
-In this case, using `fatcat`s JSON output and jq is a neat thing.
+At this point, we want to find what folder contains that specific file file, hoping it will improve our situation.
 
+In this case, we can automate this using `fatcat` JSON output format and `jq`.
 
     for i in {1..66000}; do fatcat strcmp.fat32 -L $i -F json 2>/dev/null | jq 'if (.Entries[] | select(.Name == "MATCH")) then .Cluster else "" end'; done
     
@@ -155,7 +154,7 @@ At this point we want to lookup references to these directory entries. We again 
 
     for i in {1..66000}; do fatcat strcmp.fat32 -L $i -F json 2>/dev/null | jq 'if (.Entries[] | select(.Name == "MATCH")) then .Cluster else "" end' | xargs --no-run-if-empty fatcat strcmp.fat32 -k ; done
     
-Note the `--no-run-if-empty` passed to xargs.
+Note the `--no-run-if-empty` passed to `xargs`.
 
 If we run this for a minute, we magically get the *correct* solution
 
