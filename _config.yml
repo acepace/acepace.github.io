@@ -21,6 +21,29 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://www.acepace.net" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: ace__pace
 github_username:  acepace
+author: Ace Pace
+navbar-links:
+  About Me: "about"
+avatar: "/assets/img/excellent.jpg"
+social-network-links:
+  email: "acepace@gmail.com"
+  github: acepace
+  twitter: ace__pace
+  rss: true
+  stackoverflow: "40115/daniel-goldberg"
+share-links-active:
+  twitter: true
+  linkedin: true
+url-pretty: "www.acepace.net"
+link-tags: true
+excerpt_length: 50
+
+timezone: "Asia/Jerusalem"
+highlighter: rouge
+permalink: /:year-:month-:day-:title/
+paginate: 5
+kramdown:
+  input: GFM
 
 # Build settings
 markdown: kramdown
@@ -29,6 +52,7 @@ plugins:
   - jekyll-feed
   - jekyll-sitemap
   - jekyll-seo-tag
+  - jekyll-paginate
 
 google_analytics: UA-138660704-1
 
