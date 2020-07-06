@@ -113,6 +113,7 @@ A tiny line in the `fatcat` manual states
 Gives us a long list of results, among them
 
     Found /SPACE/SPACE/!/SPACE/!/SPACE/SPACE/SPACE/!/#/P/C/P/C/P/C/T/F/{/P/C/P/C/T/F/{/P/C/T/F/{/W/H/A/T/_/I/N/_/T/A/R/N/A/T/I/O/N/_/I/S/_/T/H/1/S/_/F/I/L/E/S/Y/S/T/E/M/!/}/SPACE/SPACE/SPACE/!/SORRY in directory ! (858)
+
 Notice the `PCTF{` bit in the middle? One minute with notepad++ and we get the flag.
 
 # Solution 2
