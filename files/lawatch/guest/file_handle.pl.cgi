@@ -1,0 +1,28 @@
+#!/usr/local/bin/perl
+print "Content-type:text/html\n\n";
+read(STDIN, $buffer, $ENV{'CONTENT_LENGTH'});
+@pairs = split(/&/, $buffer);
+foreach $pair (@pairs) {
+    ($name, $value) = split(/=/, $pair);
+    $value =~ tr/+/ /;
+    $value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
+    $FORM{$name} = $value;
+}
+
+
+open (OUTF,">>submited.html");
+print OUTF "<font size=2> \n";
+print OUTF "<b>Name:</b> $FORM{'name'} <br>\n";
+print OUTF "<b>Reply Email:</b> $FORM{'mail'} <br>\n";
+print OUTF "<b>-------------------------------</b><br>\n";
+print OUTF "$FORM{'comment'} <br>\n";
+print OUTF "<hr>\n";
+
+
+
+
+close (OUTF);
+
+print "<html><head>\n";
+print "<meta http-equiv=\"refresh\" content=\"3 ;URL=http://study.haifa.ac.il/~rzilbe01/submited.html\">\n";
+print "</head></html>";
