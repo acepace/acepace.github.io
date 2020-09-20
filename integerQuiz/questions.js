@@ -56,7 +56,7 @@ data = [{'question': '\nWhat does the expression\xa0 <tt>1 &gt; 0</tt> \xa0evalu
   'answers': ['defined for all values of x',
    'defined for some values of x',
    'defined for no values of x'],
-  'correct': [2]},
+  'correct': [3]},
  {'question': '\nAssume x has type\xa0 <tt>short</tt> . Is the expression\xa0 <tt>x&lt;&lt;29</tt> ...',
   'explanation': 'Operands to shift operators are promoted before the shift executes. Therefore, the fact that 29 is not less than 16 is irrelevant and a shift-past-bitwidth error does not occur.',
   'answers': ['defined for all values of x',
