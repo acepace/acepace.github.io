@@ -20,7 +20,7 @@ data = [{'question': '\nWhat does the expression\xa0 <tt>1 &gt; 0</tt> \xa0evalu
  {'question': '\nWhat does the expression\xa0 <tt>SCHAR_MAX == CHAR_MAX</tt> \xa0evaluate to?',
   'explanation': 'Sorry about that -- I didn\'t give you enough information to answer this one. The signedness of the char type is implementation-defined, meaning the each C implementation is permitted to make\n its own choice, provided that the choice is documented and consistent. ABIs for x86 and x86-64 tend to specify that char is signed, which is why I\'ve said that "1" is the correct answer here.',
   'answers': ['0', '1', 'undefined'],
-  'correct': []},
+  'correct': [2]},
  {'question': '\nWhat does the expression\xa0 <tt>UINT_MAX + 1</tt> \xa0evaluate to?',
   'explanation': 'The C standard guarantees that UINT_MAX+1 is 0.',
   'answers': ['0', '1', 'INT_MAX', 'UINT_MAX', 'undefined'],
