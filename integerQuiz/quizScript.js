@@ -1,7 +1,6 @@
 let questions
 
 function loadQuestions() {
-    console.log(data)
     document.getElementById("btn").className = "d-none"
     const questionsDiv = document.getElementById("question")
     const h4AnswerTitle = document.createElement("h4")
@@ -18,6 +17,7 @@ function loadQuestions() {
         for (let x = 0; x < data[i].answers.length; x++) {
             const answerDiv = document.createElement("div")
             const answerElmnt = document.createElement("button")
+
             answerElmnt.innerHTML = data[i].answers[x]
             answerElmnt.className = "m-2 btn btn-primary"
             answerElmnt.value = x + 1
@@ -28,6 +28,7 @@ function loadQuestions() {
                     explanationDiv.removeChild(explanationDiv.firstChild)
                 }
                 const explanationElmnt = document.createElement("p")
+                explanationElmnt.classList.add("explanation");
                 explanationElmnt.innerHTML = data[i].explanation
                 const rightOrWrongElmnt = document.createElement("p")
                 if (data[i].correct.indexOf(parseInt(answerElmnt.value)) !== -1) {
