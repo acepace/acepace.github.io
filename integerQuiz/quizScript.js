@@ -20,7 +20,7 @@ function loadQuestions() {
 
             answerElmnt.innerHTML = data[i].answers[x]
             answerElmnt.className = "m-2 btn btn-primary"
-            answerElmnt.value = x + 1
+            answerElmnt.value = (x + 1).toString()
             answerDiv.appendChild(answerElmnt)
             answersDiv.appendChild(answerDiv)
             let event_listener = () => {
