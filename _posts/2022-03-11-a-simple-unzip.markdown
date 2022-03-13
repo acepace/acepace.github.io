@@ -48,10 +48,10 @@ The specifications are
 
 The different options benchmarked were:
 
-1: Copy to PC + extract + copy back
-2: Run 7z on PC targeting remote file share
-3: Run 7z on the NAS
-4: Copy to PC + extract + create a single file TAR + copy back + extract TAR on NAS
+1. Copy to PC + extract + copy back
+2. Run 7z on PC targeting remote file share
+3. Run 7z on the NAS
+4. Copy to PC + extract + create a single file TAR + copy back + extract TAR on NAS
 
 Obviously many parameters that should be considered were omitted, such as unrelated network traffic, other file IO happening on either disk at the same time, CPU usage, archive settings, compilation flags of 7z and probably many others. Each option took too long and so I didn't carefully rerun multiple times. However I still feel this is an interesting out of the box comparison.
 
