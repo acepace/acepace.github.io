@@ -12,6 +12,7 @@ I assume this is common for atleast some of us. We download a large archive then
 In our case, the input is a 7zip archive of 89.5 GB (96,200,220,672 bytes) with 1,350,408 files in 233,996 folders, whose uncompressed size is 324GB (324,656,867,839 bytes)
 
 The archive file size distribution is as follows:
+
 | size bucket |  number | 
 |-------------|---------| 
 | 1k          | 394652  | 
@@ -301,4 +302,4 @@ In the interests of continuing this benchmark, I compared two additional large a
 | 32GB |   9  |
 | 73GB |  22  |
 
-Note that with these runtimes it's clear that just downloading and uploading the data would be a waste of time. Clearly if it's not computationally heavy, the data transfer costs dominate.
+Note that with these runtimes it's clear that just downloading and uploading the data would be a waste of time. Clearly if it's not computationally heavy, the data transfer costs dominate. I also ran into technical issues that complicated trying option 4 "Download, extract, archive, upload and extract" on these files.
