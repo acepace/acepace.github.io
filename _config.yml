@@ -54,7 +54,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-paginate
 
-google_analytics: 330397462
+google_analytics: G-ZZDJSY0M9K
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
