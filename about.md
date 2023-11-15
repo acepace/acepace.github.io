@@ -4,4 +4,4 @@ title: About
 permalink: /about/
 ---
 
-Nothing really to add here, I sometimes write up stuff here. Sometimes in work blogs. Whatever strikes my fancy.
+Feel free to email me on basically anything on computing or history
