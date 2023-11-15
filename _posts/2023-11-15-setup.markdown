@@ -1,0 +1,15 @@
+---
+layout: post
+title:  "Gist on automating setup"
+date:   2019-09-30 10:55:03 +0200
+categories: windows IT
+tags: [windows, IT]
+---
+
+A very quick wrapper for [this gist](https://gist.github.com/acepace/d71a71c9cec4bed1ec1da0a6bd7b9a12) set of script.
+
+The primary reason you want to automate setting up your personal machine is not because you're some kind of nutter who wants to automate all the things, but rather you want to specify and understand what you like in your enviornment.
+
+Setting up Windows machines automatically used to be a pain but with the advent of [Chocolately](https://chocolatey.org/) and followups most notably [winget](https://github.com/microsoft/winget-cli) which is developed by Microsoft (with an ugly side story) this has turned far simpler.
+
+I suggest anyone admining a Windows box fork this and try to modify it for their needs, you'd be surprised how many small things pile up as small installations and modifications.
