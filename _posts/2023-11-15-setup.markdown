@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Gist on automating setup"
-date:   2019-09-30 10:55:03 +0200
+date:   2023-11-14 10:55:03 +0200
 categories: windows IT
 tags: [windows, IT]
 ---
