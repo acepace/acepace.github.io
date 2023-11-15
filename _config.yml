@@ -31,12 +31,17 @@ social-network-links:
   twitter: ace__pace
   rss: true
   stackoverflow: "40115/daniel-goldberg"
+  mastodon: infosec.exchange/@acepace
+  bluesky: acepace
+rss-description: "Ace Pace personal posts"
 share-links-active:
   twitter: true
   linkedin: true
 url-pretty: "www.acepace.net"
 link-tags: true
 excerpt_length: 50
+feed_show_excerpt: true
+feed_show_tags: true
 
 timezone: "Asia/Jerusalem"
 highlighter: rouge
@@ -54,16 +59,15 @@ plugins:
   - jekyll-seo-tag
   - jekyll-paginate
 
-google_analytics: G-ZZDJSY0M9K
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
-# exclude:
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
