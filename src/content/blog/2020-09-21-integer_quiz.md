@@ -1,5 +1,5 @@
 ---
-title:  "Integers in C"
+title:  "Integers in C Quiz: Undefined Behavior and Edge Cases"
 date:   2020-09-20 18:00 +0200
 categories: C programming 
 tags: [C, programming, integers]
