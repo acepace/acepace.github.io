@@ -76,21 +76,6 @@ description: Optional short summary
 - Custom domain is preserved by `public/CNAME` (`www.acepace.net`)
 - PR testing/preview and merge operator checklist: `docs/PR_PREVIEW_AND_DEPLOY_RUNBOOK.md`
 
-## Jekyll to Astro Differences
-- Liquid tags (for example `{{ site.url }}`, `{% highlight %}`) are not supported in Astro markdown.
-- Replacements used:
-- `{{ site.url }}` -> root-relative URLs (`/images/...`)
-- `{% highlight lang %}...{% endhighlight %}` -> fenced code blocks with language
-- Jekyll layouts/includes were replaced with Astro layouts/components:
-- `src/layouts/BaseLayout.astro`
-- `src/layouts/PostLayout.astro`
-- `src/components/PostList.astro`
-- Jekyll plugin equivalents:
-- `jekyll-feed` -> `src/pages/feed.xml.ts` using `@astrojs/rss`
-- `jekyll-sitemap` -> `@astrojs/sitemap` integration in `astro.config.mjs`
-- `jekyll-seo-tag` -> SEO/meta tags in `src/layouts/BaseLayout.astro`
-- `jekyll-paginate` -> static pagination in `src/utils/content.ts` + page routes
-
 ## Troubleshooting
 - `npm install` fails:
 - Confirm Node version is 20.x: `node -v`
@@ -108,3 +93,4 @@ description: Optional short summary
 - Open Actions logs for `.github/workflows/deploy.yml`
 - Confirm Pages is enabled in repository settings
 - Confirm branch is `master` and the workflow has `pages: write` permissions
+
