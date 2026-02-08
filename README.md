@@ -74,6 +74,7 @@ description: Optional short summary
 - Build output: `dist/`
 - GitHub Pages publish job uploads `dist/` artifact and deploys it
 - Custom domain is preserved by `public/CNAME` (`www.acepace.net`)
+- PR testing/preview and merge operator checklist: `docs/PR_PREVIEW_AND_DEPLOY_RUNBOOK.md`
 
 ## Jekyll to Astro Differences
 - Liquid tags (for example `{{ site.url }}`, `{% highlight %}`) are not supported in Astro markdown.
