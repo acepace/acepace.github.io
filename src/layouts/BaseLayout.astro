@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  ogType?: 'website' | 'article';
+}
+
+const {
+  title = 'Musing on random technical subjects',
+  description = 'Random writing of a geek, sometimes security and OS, sometimes just junk.',
+  canonical,
+  ogType = 'website'
+} = Astro.props;
+const pageTitle = title;
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content="Musing on random technical subjects" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@ace__pace" />
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml" />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <h1 class="site-title"><a href="/">Musing on random technical subjects</a></h1>
+        <p class="site-subtitle">Random writing of a geek, sometimes security and OS, sometimes just junk.</p>
+        <nav>
+          <a href="/">Home</a>
+          <a href="/about/">About</a>
+          <a href="/tags/">Tags</a>
+          <a href="/feed.xml">RSS</a>
+        </nav>
+      </div>
+    </header>
+    <main class="container">
+      <slot />
+    </main>
+    <footer>
+      <div class="container">
+        <p>© Ace Pace</p>
+      </div>
+    </footer>
+  </body>
+</html>
