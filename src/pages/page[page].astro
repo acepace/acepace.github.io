@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 const { posts, page, totalPages } = Astro.props;
 ---
 
-<BaseLayout title={`Page ${page} | Musing on random technical subjects`}>
+<BaseLayout title={`Older Posts - Page ${page} | Musing on random technical subjects`}>
   <PostList posts={posts} />
   <Pagination currentPage={page} totalPages={totalPages} />
 </BaseLayout>
