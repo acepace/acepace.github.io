@@ -34,6 +34,13 @@ const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toStri
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@ace__pace" />
     <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml" />
+    <!-- Cloudflare Web Analytics -->
+    <script
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "383f18d201d7445683600292e88f75cb"}'
+    ></script>
+    <!-- End Cloudflare Web Analytics -->
   </head>
   <body>
     <header>
