@@ -1,37 +1,110 @@
-## Welcome to GitHub Pages
+# acepace.github.io (Astro)
 
-You can use the [editor on GitHub](https://github.com/acepace/acepace.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+This repository is a static Astro site deployed to GitHub Pages.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Prerequisites
+- Node.js: `20.x` (recommended: latest Node 20 LTS)
+- Package manager: `npm`
+- Required global tools: none
+- Optional editor extensions: Astro, ESLint, Prettier, Markdown linting
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+## Local Development
+1. Install dependencies:
+```bash
+npm install
+```
+2. Start dev server:
+```bash
+npm run dev
+```
+3. Build static output:
+```bash
+npm run build
+```
+4. Preview production build:
+```bash
+npm run preview
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Content Workflows
+### Add a new blog post
+1. Create a markdown file in `src/content/blog/`.
+2. Use filename format: `YYYY-MM-DD-slug.md`.
+3. Use frontmatter:
+```md
+---
+title: "Post title"
+date: 2026-02-08 12:00:00 +0200
+tags: [tag1, tag2]
+categories: [category1]
+description: Optional short summary
+---
+```
+4. Permalink is generated as `/YYYY-MM-DD-slug/`.
+- Date in URL uses frontmatter `date`.
+- Slug in URL uses the filename slug segment.
+5. Add images/assets in `public/images/` (or another `public/` subfolder) and reference as `/images/example.png`.
 
-### Jekyll Themes
+### Add or edit static pages
+- Create/edit Astro pages in `src/pages/`.
+- Examples: `src/pages/about.astro`, `src/pages/tags/index.astro`.
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/acepace/acepace.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+### Assets placement and references
+- Put static files under `public/`.
+- Reference by root-relative path, for example:
+- `/images/deadlockEmpire/Barrier.jpg`
+- `/files/lawatch/index.html`
 
-### Support or Contact
+## Routing Rules
+- Post permalink rule: `/YYYY-MM-DD-slug/`
+- Implemented in:
+- `src/pages/[year]-[month]-[day]-[slug].astro`
+- `src/utils/blog.ts` (`getFilenameSlug`, `getPostPermalink`)
+- Pagination size is `5` and implemented in:
+- `src/utils/blog.ts` (`POSTS_PER_PAGE`)
+- `src/utils/content.ts` (`paginatePosts`)
+- Index and pagination routes:
+- `/` (`src/pages/index.astro`)
+- `/page2/`, `/page3/` via `src/pages/page[page].astro` (Jekyll-style compatibility)
+- `/page/2/`, `/page/3/` via `src/pages/page/[page].astro`
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+## Deployment
+- GitHub Actions workflow: `.github/workflows/deploy.yml`
+- Trigger: push to `master` (and manual dispatch)
+- Build output: `dist/`
+- GitHub Pages publish job uploads `dist/` artifact and deploys it
+- Custom domain is preserved by `public/CNAME` (`www.acepace.net`)
+- PR testing/preview and merge operator checklist: `docs/PR_PREVIEW_AND_DEPLOY_RUNBOOK.md`
+
+## Jekyll to Astro Differences
+- Liquid tags (for example `{{ site.url }}`, `{% highlight %}`) are not supported in Astro markdown.
+- Replacements used:
+- `{{ site.url }}` -> root-relative URLs (`/images/...`)
+- `{% highlight lang %}...{% endhighlight %}` -> fenced code blocks with language
+- Jekyll layouts/includes were replaced with Astro layouts/components:
+- `src/layouts/BaseLayout.astro`
+- `src/layouts/PostLayout.astro`
+- `src/components/PostList.astro`
+- Jekyll plugin equivalents:
+- `jekyll-feed` -> `src/pages/feed.xml.ts` using `@astrojs/rss`
+- `jekyll-sitemap` -> `@astrojs/sitemap` integration in `astro.config.mjs`
+- `jekyll-seo-tag` -> SEO/meta tags in `src/layouts/BaseLayout.astro`
+- `jekyll-paginate` -> static pagination in `src/utils/content.ts` + page routes
+
+## Troubleshooting
+- `npm install` fails:
+- Confirm Node version is 20.x: `node -v`
+- Remove stale lock/state and reinstall if needed
+
+- Build fails due to frontmatter validation:
+- Check required fields in blog post frontmatter (`title`, `date`)
+- Ensure `tags`/`categories` are arrays or simple space/comma-separated strings
+
+- Broken links or images:
+- Verify files exist under `public/`
+- Use root-relative links (`/images/...`), not local filesystem paths
+
+- Deployment workflow failed:
+- Open Actions logs for `.github/workflows/deploy.yml`
+- Confirm Pages is enabled in repository settings
+- Confirm branch is `master` and the workflow has `pages: write` permissions

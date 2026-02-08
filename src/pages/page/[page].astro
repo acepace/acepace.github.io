@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostList from '../../components/PostList.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getPublishedPosts, paginatePosts } from '../../utils/content';
+
+export async function getStaticPaths() {
+  const pages = paginatePosts(await getPublishedPosts()).filter((p) => p.page > 1);
+  return pages.map((p) => ({
+    params: { page: String(p.page) },
+    props: p
+  }));
+}
+
+const { posts, page, totalPages } = Astro.props;
+---
+
+<BaseLayout title={`Page ${page} | Musing on random technical subjects`}>
+  <PostList posts={posts} />
+  <Pagination currentPage={page} totalPages={totalPages} />
+</BaseLayout>

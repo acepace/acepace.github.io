@@ -1,0 +1,26 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  basePath?: string;
+}
+
+const { currentPage, totalPages, basePath = '/' } = Astro.props;
+
+const prevUrl =
+  currentPage > 1
+    ? currentPage - 1 === 1
+      ? basePath
+      : `/page${currentPage - 1}/`
+    : null;
+
+const nextUrl = currentPage < totalPages ? `/page${currentPage + 1}/` : null;
+---
+
+{totalPages > 1 && (
+  <nav class="pagination" aria-label="Pagination">
+    <div>{prevUrl ? <a href={prevUrl}>Newer Posts</a> : <span />}</div>
+    <div>Page {currentPage} / {totalPages}</div>
+    <div>{nextUrl ? <a href={nextUrl}>Older Posts</a> : <span />}</div>
+  </nav>
+)}
