@@ -9,8 +9,9 @@ export const TIMEZONE = 'Asia/Jerusalem';
 const postFilenamePattern = /^(\d{4})-(\d{2})-(\d{2})-(.+)$/;
 
 export function getFilenameSlug(entry: Pick<CollectionEntry<'blog'>, 'id'>): string {
-  const match = entry.id.match(postFilenamePattern);
-  return match ? match[4] : entry.id;
+  const idWithoutExtension = entry.id.replace(/\.[^/.]+$/, '');
+  const match = idWithoutExtension.match(postFilenamePattern);
+  return match ? match[4] : idWithoutExtension;
 }
 
 export function getPostPermalink(entry: CollectionEntry<'blog'>): string {
