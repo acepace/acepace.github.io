@@ -2,10 +2,295 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="404 - Page not found">
-  <div class="card">
-    <h1>404</h1>
-    <p><strong>Page not found :(</strong></p>
-    <p>The requested page could not be found.</p>
-  </div>
+<BaseLayout title="404 - WinDbg Session">
+  <section class="debug-shell" aria-label="WinDbg style 404 console">
+    <header class="shell-header">
+      <p class="window-label">Microsoft (R) Windows Debugger Version 10.0.40486.1000 AMD64</p>
+      <p class="window-subtitle">Copyright (c) Microsoft Corporation. All rights reserved.</p>
+    </header>
+
+    <div class="console-body" id="console-log">
+      <p class="line">Loading Dump File [C:\inetpub\wwwroot\missing-page.dmp]</p>
+      <p class="line">Kernel Bitmap Dump File: Kernel address space is available, User address space may not be available.</p>
+      <p class="line blank"></p>
+      <p class="line">Symbol search path is: srv*</p>
+      <p class="line">Executable search path is:</p>
+      <p class="line">Windows 11 Kernel Version 26100 MP (8 procs) Free x64</p>
+      <p class="line">Debug session time: Sun Feb 08 22:44:00.000 2026 (UTC - 5:00)</p>
+      <p class="line">System Uptime: 8 days 04:04:04.404</p>
+      <p class="line blank"></p>
+      <p class="line accent">kd&gt; !analyze -v</p>
+      <p class="line bad">BUGCHECK_CODE:  404</p>
+      <p class="line">BUGCHECK_P1: c0000225</p>
+      <p class="line">BUGCHECK_P2: 0000000000000000</p>
+      <p class="line">BUGCHECK_P3: fffff801`2badf00d</p>
+      <p class="line">BUGCHECK_P4: 0000000000000001</p>
+      <p class="line blank"></p>
+      <p class="line">MODULE_NAME: human_typo</p>
+      <p class="line">IMAGE_NAME: brokenlink.sys</p>
+      <p class="line">FAILURE_BUCKET_ID: PAGE_NOT_PRESENT_MISSING_ROUTE</p>
+      <p class="line good">RECOMMENDATION: run `home` to return to a known-good control flow.</p>
+      <p class="line blank"></p>
+    </div>
+
+    <form class="prompt-row" id="prompt-form">
+      <label class="prompt-label" for="prompt-input">kd&gt;</label>
+      <input
+        id="prompt-input"
+        name="command"
+        type="text"
+        spellcheck="false"
+        autocomplete="off"
+        placeholder="Type help, lm, kb, !analyze -v, home"
+        aria-label="Debugger command input"
+      />
+    </form>
+
+    <footer class="quick-actions">
+      <a href="/" class="action">Return Home</a>
+      <a href="/tags/" class="action">Browse Tags</a>
+      <a href="/about/" class="action">About</a>
+    </footer>
+  </section>
 </BaseLayout>
+
+<style>
+  .debug-shell {
+    background: radial-gradient(circle at top right, #10233f 0%, #090f1a 50%, #05080f 100%);
+    border: 1px solid #1d3458;
+    border-radius: 12px;
+    box-shadow: 0 18px 45px rgb(0 0 0 / 35%);
+    color: #dbe9ff;
+    font-family: 'Consolas', 'Courier New', monospace;
+    margin: 1rem 0 2rem;
+    overflow: hidden;
+  }
+
+  .shell-header {
+    background: linear-gradient(180deg, #183c67 0%, #0d223d 100%);
+    border-bottom: 1px solid #2f527e;
+    padding: 0.9rem 1rem;
+  }
+
+  .window-label {
+    margin: 0;
+    color: #f2f7ff;
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .window-subtitle {
+    color: #b5c8e4;
+    font-size: 0.82rem;
+    margin: 0.2rem 0 0;
+  }
+
+  .console-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 1rem;
+  }
+
+  .line {
+    font-size: 0.9rem;
+    margin: 0;
+    padding: 0.08rem 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .line.blank {
+    min-height: 0.65rem;
+  }
+
+  .line.accent {
+    color: #8bc6ff;
+  }
+
+  .line.bad {
+    color: #ff8e8e;
+    font-weight: 700;
+  }
+
+  .line.good {
+    color: #8fe7b9;
+  }
+
+  .prompt-row {
+    align-items: center;
+    border-top: 1px solid #1d3458;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.8rem 1rem 0.9rem;
+  }
+
+  .prompt-label {
+    color: #8bc6ff;
+    flex: 0 0 auto;
+    font-weight: 700;
+  }
+
+  #prompt-input {
+    background: #02050c;
+    border: 1px solid #28446b;
+    border-radius: 5px;
+    color: #f2f7ff;
+    flex: 1;
+    font: inherit;
+    min-width: 0;
+    padding: 0.45rem 0.55rem;
+  }
+
+  #prompt-input:focus {
+    border-color: #72b2ff;
+    outline: none;
+  }
+
+  #prompt-input::placeholder {
+    color: #7993b8;
+  }
+
+  .quick-actions {
+    border-top: 1px solid #1d3458;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 0.8rem 1rem 1rem;
+  }
+
+  .action {
+    background: #11263f;
+    border: 1px solid #2f527e;
+    border-radius: 4px;
+    color: #c8dcfa;
+    padding: 0.35rem 0.65rem;
+    text-decoration: none;
+  }
+
+  .action:hover {
+    background: #163155;
+    color: #f5fbff;
+  }
+
+  @media (max-width: 640px) {
+    .window-label {
+      font-size: 0.85rem;
+    }
+
+    .window-subtitle,
+    .line {
+      font-size: 0.8rem;
+    }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('prompt-form');
+  const input = document.getElementById('prompt-input');
+  const log = document.getElementById('console-log');
+  const history = [];
+  let historyIndex = -1;
+
+  const responses = {
+    help: [
+      'Commands:',
+      '  !analyze -v   - verbose crash triage',
+      '  lm            - list loaded modules',
+      '  kb            - stack backtrace',
+      '  .reload /f    - force symbol reload',
+      '  home          - jump to /',
+      '  cls           - clear console output'
+    ],
+    lm: [
+      'start             end                 module name',
+      'fffff801`2a100000 fffff801`2a220000 nt',
+      'fffff801`2bad0000 fffff801`2bae1000 brokenlink',
+      'fffff801`2c000000 fffff801`2c012000 typohelper'
+    ],
+    kb: [
+      '# Child-SP          RetAddr               Call Site',
+      '00 ffffbf0a`2af7f600 fffff801`2a1a3f42 nt!KeBugCheckEx',
+      '01 ffffbf0a`2af7f608 fffff801`2a1a2850 nt!KiBugCheckDispatch+0x72',
+      '02 ffffbf0a`2af7f740 fffff801`2bad0a11 nt!KiPageFault+0x450',
+      '03 ffffbf0a`2af7f8d0 fffff801`2bad1010 brokenlink!ResolveRoute+0x1a1',
+      '04 ffffbf0a`2af7f920 00000000`00000000 brokenlink!HandleRequest+0x90'
+    ],
+    '!analyze -v': [
+      'Probably caused by : human_typo.sys ( human_typo!forgot_slash+0x14 )',
+      'Followup:     MachineOwner',
+      'Metadata:     No IoCs found, only a broken permalink.'
+    ],
+    '.reload /f': [
+      'Reloading current modules',
+      '........................................',
+      'Symbols loaded.'
+    ]
+  };
+
+  function appendLines(lines, className = '') {
+    lines.forEach((text) => {
+      const p = document.createElement('p');
+      p.className = `line ${className}`.trim();
+      p.textContent = text;
+      log.appendChild(p);
+    });
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function runCommand(raw) {
+    const command = raw.trim().toLowerCase();
+    appendLines([`kd> ${raw}`], 'accent');
+
+    if (!command) {
+      appendLines(['']);
+      return;
+    }
+
+    if (command === 'home') {
+      appendLines(['Switching context to known-good entry point: /'], 'good');
+      window.location.href = '/';
+      return;
+    }
+
+    if (command === 'cls') {
+      log.innerHTML = '';
+      return;
+    }
+
+    if (responses[command]) {
+      appendLines(responses[command]);
+      appendLines(['']);
+      return;
+    }
+
+    appendLines([`Syntax error in '${raw}'. Type 'help' for available commands.`], 'bad');
+    appendLines(['']);
+  }
+
+  if (form && input && log) {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const value = input.value;
+      runCommand(value);
+      if (value.trim()) {
+        history.push(value);
+        historyIndex = history.length;
+      }
+      input.value = '';
+    });
+
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowUp' && history.length > 0) {
+        event.preventDefault();
+        historyIndex = Math.max(0, historyIndex - 1);
+        input.value = history[historyIndex];
+      } else if (event.key === 'ArrowDown' && history.length > 0) {
+        event.preventDefault();
+        historyIndex = Math.min(history.length, historyIndex + 1);
+        input.value = historyIndex === history.length ? '' : history[historyIndex];
+      }
+    });
+
+    input.focus();
+  }
+</script>
